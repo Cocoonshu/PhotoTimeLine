@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2195F3</color>
+    <color name="colorPrimaryDark">#1b75bf</color>
+    <color name="colorAccent">#2195F3</color>
+
+    <color name="statusBarColor">#2195F3</color>
+    <color name="layout_background">#FFF5F5F5</color>
+    <color name="divider_line">#FFDCDCDC</color>
+    <color name="text_dark">#FF333333</color>
+    <color name="text_light">#FFFFFFFF</color>
+    <color name="text_sub_light">#80FFFFFF</color>
+    <color name="icon_dark">#FF7F7F7F</color>
+    <color name="icon_light">#A6FFFFFF</color>
+</resources>
