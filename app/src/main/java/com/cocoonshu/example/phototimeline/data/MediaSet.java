@@ -10,8 +10,6 @@ public class MediaSet extends MediaObject {
 
     public static final int INVALID_COUNT = -1;
 
-    private int
-
     public MediaSet(long version) {
         super(version);
     }

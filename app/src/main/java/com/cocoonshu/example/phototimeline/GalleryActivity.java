@@ -17,11 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import com.cocoonshu.example.phototimeline.utils.Debugger;
+
 /**
  * @Author Cocoonshu
  * @Date   2017-04-13
  */
 public class GalleryActivity extends AppCompatActivity {
+    private static final String TAG = "GalleryActivity";
 
     private Toolbar               mToolbar         = null;
     private FloatingActionButton  mFabModeSwitcher = null;
@@ -31,13 +34,53 @@ public class GalleryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Debugger.i(TAG, "[onCreate]");
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        GalleryApplication application = (GalleryApplication) getApplication();
+        application.getThemedConfig(this);
+
         setupActionBar();
         findViews();
         setupListeners();
+    }
+
+    @Override
+    protected void onStart() {
+        Debugger.i(TAG, "[onStart]");
+        super.onStart();
+        GalleryApplication application = (GalleryApplication) getApplication();
+        application.getThreadPool().resume();
+        application.getDataManager().resume();
+    }
+
+    @Override
+    protected void onResume() {
+        Debugger.i(TAG, "[onResume]");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Debugger.i(TAG, "[onPause]");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Debugger.i(TAG, "[onStop]");
+        super.onStop();
+        GalleryApplication application = (GalleryApplication) getApplication();
+        application.getThreadPool().pause();
+        application.getDataManager().pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Debugger.i(TAG, "[onDestroy]");
+        super.onDestroy();
     }
 
     private void setupActionBar() {
