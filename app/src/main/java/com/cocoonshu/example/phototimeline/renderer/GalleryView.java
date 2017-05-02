@@ -13,6 +13,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GalleryView extends AbsGalleryView {
 
+    private GLCanvas mGLCanvas = null;
+
     public GalleryView(Context context) {
         super(context);
     }
@@ -23,18 +25,17 @@ public class GalleryView extends AbsGalleryView {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        mGLCanvas = new AdvanceGL20Canvas(config);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-
+        mGLCanvas.setCanvasSize(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        gl.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
-        gl.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        mGLCanvas.clearScreen(0xFFF5F5F5);
     }
 
 }

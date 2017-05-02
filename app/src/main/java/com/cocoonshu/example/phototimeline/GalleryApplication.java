@@ -2,8 +2,10 @@ package com.cocoonshu.example.phototimeline;
 
 import android.app.Activity;
 import android.app.Application;
+import android.media.MediaScannerConnection;
 
 import com.cocoonshu.example.phototimeline.config.Config;
+import com.cocoonshu.example.phototimeline.data.DataManager;
 
 import java.util.concurrent.ExecutorService;
 
@@ -13,9 +15,16 @@ import java.util.concurrent.ExecutorService;
  */
 public class GalleryApplication extends Application {
 
+    private DataManager mDataManager = null;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        initializeResources();
+    }
+
+    private void initializeResources() {
+        mDataManager = new DataManager(this);
     }
 
     /********************************
@@ -38,5 +47,9 @@ public class GalleryApplication extends Application {
 
     public Config getThemedConfig(Activity activity) {
         throw new UnsupportedOperationException();
+    }
+
+    public DataManager getDataManager() {
+        return mDataManager;
     }
 }
