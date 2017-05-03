@@ -3,7 +3,6 @@ package com.cocoonshu.example.phototimeline;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,12 +13,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
 import com.cocoonshu.example.phototimeline.config.Config;
+import com.cocoonshu.example.phototimeline.data.DateTimeAlbum;
 import com.cocoonshu.example.phototimeline.utils.Debugger;
 import com.cocoonshu.example.phototimeline.utils.PermissionUtils;
 
@@ -70,6 +69,20 @@ public class GalleryActivity extends AppCompatActivity {
         } else {
             PermissionUtils.requestPermissions(GalleryActivity.this);
         }
+
+        final GalleryApplication application = (GalleryApplication) getApplication();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DateTimeAlbum album = new DateTimeAlbum(application);
+                    album.updateTimeInfo();
+                } catch (Throwable thr) {
+                    Debugger.e(TAG, "[run] DataTimeAlbum update time information failed", thr);
+                }
+            }
+        };
+        application.getWorkExecutor().submit(runnable);
     }
 
     @Override

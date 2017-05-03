@@ -2,7 +2,6 @@ package com.cocoonshu.example.phototimeline.data;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Debug;
 import android.os.Handler;
 
 import com.cocoonshu.example.phototimeline.GalleryApplication;
