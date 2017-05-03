@@ -1,7 +1,9 @@
 package com.cocoonshu.example.phototimeline.config;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 
@@ -36,6 +38,27 @@ public class Config {
         return mTheme != null ? mTheme.isSame(activity) : false;
     }
 
+    /**
+     * Data layer configurations
+     */
+    public static class Data {
+        public static final boolean MediaBucketObserverEnabled = false;
+    }
+
+    /**
+     * Permissions
+     */
+    public static class Permission {
+        public static final int      REQUEST_CODE_PERMISSIONS = 0x252146;
+        public static final String[] Permissions = new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+    }
+
+    /**
+     * Theme
+     */
     public static class Theme {
         private static final String TAG = "Theme";
 

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import static com.cocoonshu.example.phototimeline.config.Config.Data.MediaBucketObserverEnabled;
+
 /**
  * @Author Cocoonshu
  * @Date   2017-05-02
@@ -50,7 +52,12 @@ public class BucketManager {
         ContentResolver resolver = mContext.getContentResolver();
         resolver.registerContentObserver(sImageUri, false, mBucketObserver);
         resolver.registerContentObserver(sVideoUri, false, mBucketObserver);
-        resolver.notifyChange(sImageUri, mBucketObserver);
+        if (MediaBucketObserverEnabled) {
+            // FIXME Not work for now
+            resolver.notifyChange(sImageUri, mBucketObserver);
+        } else {
+            mBucketObserver.manualRefresh();
+        }
     }
 
     public synchronized void unsetup() {
@@ -87,6 +94,10 @@ public class BucketManager {
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            if (!MediaBucketObserverEnabled) {
+                return;
+            }
+
             Debugger.i(TAG, "[onChange] uri = " + uri.toString());
 
             // This method will be invoke very frequently,
@@ -105,10 +116,18 @@ public class BucketManager {
                 @Override
                 public void run() {
                     synchronized (mDisplayBuckets) {
-                        mDisplayBuckets = updateDisplayBuckets();
+                        try {
+                            mDisplayBuckets = updateDisplayBuckets();
+                        } catch (Throwable thr) {
+                            thr.printStackTrace();
+                        }
                     }
                 }
             });
+        }
+
+        public void manualRefresh() {
+            run();
         }
 
         public Set<Long> updateDisplayBuckets() {

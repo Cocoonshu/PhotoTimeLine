@@ -1,7 +1,9 @@
 package com.cocoonshu.example.phototimeline;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,7 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import com.cocoonshu.example.phototimeline.config.Config;
 import com.cocoonshu.example.phototimeline.utils.Debugger;
+import com.cocoonshu.example.phototimeline.utils.PermissionUtils;
+
+import java.util.ArrayList;
 
 /**
  * @Author Cocoonshu
@@ -51,36 +57,45 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onStart() {
         Debugger.i(TAG, "[onStart]");
         super.onStart();
-        GalleryApplication application = (GalleryApplication) getApplication();
-        application.getThreadPool().resume();
-        application.getDataManager().resume();
     }
 
     @Override
     protected void onResume() {
         Debugger.i(TAG, "[onResume]");
         super.onResume();
+        if (PermissionUtils.checkSelfPermissions(GalleryActivity.this)) {
+            GalleryApplication application = (GalleryApplication) getApplication();
+            application.getThreadPool().resume();
+            application.getDataManager().resume();
+        } else {
+            PermissionUtils.requestPermissions(GalleryActivity.this);
+        }
     }
 
     @Override
     protected void onPause() {
         Debugger.i(TAG, "[onPause]");
         super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        Debugger.i(TAG, "[onStop]");
-        super.onStop();
         GalleryApplication application = (GalleryApplication) getApplication();
         application.getThreadPool().pause();
         application.getDataManager().pause();
     }
 
     @Override
+    protected void onStop() {
+        Debugger.i(TAG, "[onStop]");
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         Debugger.i(TAG, "[onDestroy]");
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        PermissionUtils.onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
     private void setupActionBar() {
@@ -156,4 +171,27 @@ public class GalleryActivity extends AppCompatActivity {
         }
     }
 
+    private boolean grantPermission() {
+        Debugger.i(TAG, "[grantPermission]");
+        PackageManager    packageManager = getPackageManager();
+        ArrayList<String> noGrantList    = new ArrayList<>();
+        String            packageName    = getPackageName();
+
+        for (String permission : Config.Permission.Permissions) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                noGrantList.add(permission);
+            }
+        }
+
+        if (noGrantList.size() > 0) {
+            String[] permissions = noGrantList.toArray(new String[noGrantList.size()]);
+            requestPermissions(permissions, Config.Permission.REQUEST_CODE_PERMISSIONS);
+            for (String permission : permissions) {
+                Debugger.i(TAG, "[grantPermission] Request permission for " + permission);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
